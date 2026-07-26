@@ -1,19 +1,7 @@
-import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [
-    VitePWA({
-      registerType: 'autoUpdate',
-      manifest: {
-        name: 'renew',
-        short_name: 'Companion',
-        theme_color: '#0f172a',
-        display: 'standalone',
-      },
-    }),
-  ],
   resolve: {
     alias: {
       '@core': path.resolve(__dirname, 'src/core'),
@@ -25,14 +13,8 @@ export default defineConfig({
       '@types': path.resolve(__dirname, 'src/types'),
     },
   },
-  server: {
-    port: 5173,
-    strictPort: true,
-  },
-  optimizeDeps: {
-    exclude: ['@mlc-ai/web-llm'],
-  },
-  worker: {
-    format: 'es',
+  test: {
+    include: ['tests/**/*.test.ts'],
+    exclude: ['tests/ai.test.ts', 'tests/db.test.ts', 'tests/fsm.test.ts'],
   },
 });
