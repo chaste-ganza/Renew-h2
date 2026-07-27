@@ -132,16 +132,6 @@ backend-fsm/
     ├── fsm.test.ts                      # Unit tests for state machine transitions
     ├── db.test.ts                       # Unit tests for Dexie repositories
     └── ai.test.ts                       # Unit tests / mocks for AI pipeline output shape
-```
-
-### What changed from the original full-app structure
-
-- ❌ Removed `ui/components/`, `ui/themes/`, `ui/screens/` — not your responsibility.
-- ❌ Removed `emergency/webrtc/` as a full call-UI folder — replaced with `security/webrtc/` as **connection hooks only** (signaling + data channel setup), since this falls under your "Security, Privacy & Lifecycle" and "WebRTC hooks" responsibility, not call UI.
-- ✅ Added `core/fsm/emitter.ts` explicitly — this is the single most important file for avoiding conflicts with your teammates, since it's the *only* surface they should ever import from.
-- ✅ Added `src/test-harness/` — a plain, unstyled HTML file for you to manually click through states during development, without needing to build or wait for real UI components.
-- ✅ `main.ts` now described as booting the **engine**, not mounting an app UI — since the UI team owns the actual app shell.
-
 ---
 
 ## 4. Architectural Principles
@@ -166,7 +156,7 @@ interface EngineSnapshot {
 }
 ```
 
-Keeping this as a single, stable, well-typed surface means your internal
+Keeping this as a single, stable, well-typed surface means my internal
 refactors (new states, new side effects, swapping the DB layer, etc.)
 never break the UI team's code, as long as this contract doesn't change
 shape.
@@ -223,8 +213,8 @@ manually exercise FSM states without needing the real UI.
 | Project scaffolding (Bun + Vite + TS) | ✅ Done |
 | Role-scoped directory structure | ✅ Done |
 | Dependencies installed (Dexie, WebLLM, PWA plugin) | ✅ Done |
-| Core type definitions (`types/global.d.ts`, `core/fsm/types.ts`) | 🔄 In progress |
-| FSM transition engine (`core/fsm/machine.ts`) | ⏳ Not started |
+| Core type definitions (`types/global.d.ts`, `core/fsm/types.ts`) | ✅ Done |
+| FSM transition engine (`core/fsm/machine.ts`) | ✅ Done |
 | Integration emitter (`core/fsm/emitter.ts`) | ⏳ Not started |
 | Dexie schema & repositories | ⏳ Not started |
 | Encryption / key management / RAM purge | ⏳ Not started |
