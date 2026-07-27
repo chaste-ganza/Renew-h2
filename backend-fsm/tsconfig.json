@@ -1,16 +1,33 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "types": [
+      "bun"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@db/*": ["src/db/*"],
-      "@ai/*": ["src/ai/*"],
-      "@security/*": ["src/security/*"],
-      "@emergency/*": ["src/emergency/*"],
-      "@ui/*": ["src/ui/*"],
-      "@types/*": ["src/types/*"]
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@db/*": [
+        "src/db/*"
+      ],
+      "@ai/*": [
+        "src/ai/*"
+      ],
+      "@security/*": [
+        "src/security/*"
+      ],
+      "@emergency/*": [
+        "src/emergency/*"
+      ],
+      "@types/*": [
+        "src/types/*"
+      ]
     }
   },
-  "include": ["src", "tests", "vitest.config.ts"]
+  "include": [
+    "src",
+    "tests"
+  ]
 }
