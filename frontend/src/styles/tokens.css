@@ -1,0 +1,83 @@
+/**
+ * Theme tokens for ReNew visual modes.
+ *
+ * Approach: `data-mode` attribute on <html> switches between two age-based themes.
+ *   - data-mode="companion" — younger adolescent (Companion Mode)
+ *   - data-mode="ally"       — older adolescent (Ally / Aesthetic Mode)
+ *
+ * Shared scales (--space-*, --radius-*, --font-size-*) are mode-agnostic.
+ * Mode-specific colors use --companion-* and --ally-* prefixes, mapped to
+ * semantic aliases (--color-bg, --color-text, etc.) under each [data-mode] block.
+ */
+
+:root {
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  /* Radius scale */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Type scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+
+  --font-family-base: -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Companion palette (source values) */
+  --companion-bg: #fef9f3;
+  --companion-surface: #fff7ed;
+  --companion-primary: #f97316;
+  --companion-primary-hover: #ea580c;
+  --companion-text: #431407;
+  --companion-text-muted: #9a3412;
+  --companion-accent: #38bdf8;
+  --companion-border: #fed7aa;
+
+  /* Ally palette (source values) */
+  --ally-bg: #0f172a;
+  --ally-surface: #1e293b;
+  --ally-primary: #818cf8;
+  --ally-primary-hover: #6366f1;
+  --ally-text: #f1f5f9;
+  --ally-text-muted: #94a3b8;
+  --ally-accent: #34d399;
+  --ally-border: #334155;
+}
+
+[data-mode='companion'] {
+  --color-bg: var(--companion-bg);
+  --color-surface: var(--companion-surface);
+  --color-primary: var(--companion-primary);
+  --color-primary-hover: var(--companion-primary-hover);
+  --color-text: var(--companion-text);
+  --color-text-muted: var(--companion-text-muted);
+  --color-accent: var(--companion-accent);
+  --color-border: var(--companion-border);
+}
+
+[data-mode='ally'] {
+  --color-bg: var(--ally-bg);
+  --color-surface: var(--ally-surface);
+  --color-primary: var(--ally-primary);
+  --color-primary-hover: var(--ally-primary-hover);
+  --color-text: var(--ally-text);
+  --color-text-muted: var(--ally-text-muted);
+  --color-accent: var(--ally-accent);
+  --color-border: var(--ally-border);
+}

@@ -7,13 +7,13 @@
 
 ---
 
-## 1. Scope of This Repository
+## 1. Scope of This Folder
 
-This repository is **not** the whole ReNew app — it's the backend logic
+This folder is **not** the whole ReNew app — it's the backend logic
 engine that the visual UI team binds to. It contains **no page layouts,
 no CSS, and no component design work.**
 
-### What this repo owns
+### What this fold owns
 
 | Area | Description |
 |---|---|

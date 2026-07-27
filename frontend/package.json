@@ -1,13 +1,8 @@
 {
-  "name": "backend-fsm",
+  "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "exports": {
-    "./emitter": "./src/core/fsm/emitter.ts",
-    "./types": "./src/core/fsm/types.ts",
-    "./global-types": "./src/types/global.d.ts"
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -15,15 +10,21 @@
     "test": "vitest run",
     "lint": "eslint ."
   },
+  "dependencies": {
+    "backend-fsm": "workspace:*",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.0"
+  },
   "devDependencies": {
-    "@types/bun": "^1.3.14",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "happy-dom": "^20.4.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.0.18"
-  },
-  "dependencies": {
-    "@mlc-ai/web-llm": "^0.2.84",
-    "dexie": "^4.4.4"
   }
 }

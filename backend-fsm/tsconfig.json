@@ -1,29 +1,9 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
     "types": [
       "bun"
-    ], // ← add this line
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "ignoreDeprecations": "6.0",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
+    ],
     "baseUrl": ".",
     "paths": {
       "@core/*": [
@@ -40,9 +20,6 @@
       ],
       "@emergency/*": [
         "src/emergency/*"
-      ],
-      "@ui/*": [
-        "src/ui/*"
       ],
       "@types/*": [
         "src/types/*"

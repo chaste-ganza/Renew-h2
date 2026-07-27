@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@core/*": ["../backend-fsm/src/core/*"],
+      "@types/*": ["../backend-fsm/src/types/*"],
+      "backend-fsm/emitter": ["../backend-fsm/src/core/fsm/emitter.ts"],
+      "backend-fsm/types": ["../backend-fsm/src/core/fsm/types.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "vitest.config.ts"]
+}

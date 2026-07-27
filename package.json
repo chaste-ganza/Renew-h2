@@ -1,0 +1,25 @@
+{
+  "name": "renew-h2",
+  "private": true,
+  "workspaces": [
+    "backend-fsm",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n fsm,ui -c blue,green \"bun run --filter backend-fsm dev\" \"bun run --filter frontend dev\"",
+    "build": "bun run --filter backend-fsm build && bun run --filter frontend build",
+    "test": "bun run --filter backend-fsm test && bun run --filter frontend test",
+    "lint": "eslint backend-fsm frontend && prettier --check \"backend-fsm/**/*.{ts,tsx,json,html}\" \"frontend/**/*.{ts,tsx,css,json,html}\" \"*.{json,js,mjs}\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^17.0.0",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.54.0"
+  }
+}
