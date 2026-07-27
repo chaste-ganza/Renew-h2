@@ -1,4 +1,4 @@
-import type { AppState, AppContext, AppEvent, MachineState } from "./types";
+import type { AppEvent, MachineState } from "./types";
 import { handleOnboardingTransition, type TransitionResult } from "./states/onboarding.states";
 
 export function transition(
