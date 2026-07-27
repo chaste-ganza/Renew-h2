@@ -8,6 +8,9 @@
       "DOM",
       "DOM.Iterable"
     ],
+    "types": [
+      "bun"
+    ], // ← add this line
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -47,6 +50,7 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "tests"
   ]
 }
