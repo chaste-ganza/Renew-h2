@@ -1,9 +1,9 @@
 import Dexie, { type Table } from 'dexie';
 import { dbSchema, DB_NAME, DB_VERSION } from './schema';
-import type { UserProfiles, CheckInRecord, FsmSnapshot } from '../types/global';
+import type { CheckInRecord, FsmSnapshot, StoredProfile } from '../types/global';
 
 class RenewDatabase extends Dexie {
-    profiles!: Table<UserProfiles, string>;
+    profiles!: Table<StoredProfile, string>;
     checkins!: Table<CheckInRecord, string>;
     snapshots!: Table<FsmSnapshot, string>;
 

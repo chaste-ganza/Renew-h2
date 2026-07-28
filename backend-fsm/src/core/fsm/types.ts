@@ -1,4 +1,4 @@
-import type { UserProfiles } from "../../types/global";
+import type { UserProfile } from "../../types/global";
 
 export type AppState =
     | { domain: 'Onboarding'; step: 'Welcome' }
@@ -15,8 +15,8 @@ export type AppState =
 
 export type AppEvent =
     | { type: 'ONBOARDING_NEXT' }
-    | { type: 'ONBOARDING_AGE_SUBMITTED'; ageRange: UserProfiles['ageRange'] }
-    | { type: 'ONBOARDING_THEME_SELECTED'; theme: UserProfiles['themePreferences'] }
+    | { type: 'ONBOARDING_AGE_SUBMITTED'; ageRange: UserProfile['ageRange'] }
+    | { type: 'ONBOARDING_THEME_SELECTED'; theme: UserProfile['themePreference'] }
     | { type: 'CHECKIN_STARTED' }
     | { type: 'CHECKIN_MOOD_SELECTED'; mood: string }
     | { type: 'CHECKIN_FOLLOWUP_SUBMITTED'; notes?: string }
@@ -28,7 +28,7 @@ export type AppEvent =
     | { type: 'SOS_CANCELLED' };
 
 export interface AppContext {
-    profile: UserProfiles | null;       // null until onboarding completes
+    profile: UserProfile | null;       // null until onboarding completes
     currentMood: string | null;        // set during CheckIn.MoodSelect
     currentNotes: string | null;       // set during CheckIn.FollowUp
     sosConsentTimestamp: number | null; // when consent was granted, for audit
