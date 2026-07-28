@@ -1,0 +1,1 @@
+let sessionKey: CryptoKey | null = null
