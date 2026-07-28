@@ -1,5 +1,6 @@
 import type { AppEvent, MachineState } from "./types";
 import { handleOnboardingTransition, type TransitionResult } from "./states/onboarding.states";
+import { handleCheckInTransition } from "./states/checking.states";
 
 export function transition(
     current: MachineState,
@@ -7,13 +8,24 @@ export function transition(
 ): TransitionResult {
     const { state, context } = current;
 
+    if (event.type === 'CHECKIN_STARTED') {
+        return {
+            state: { domain: 'CheckIn', step: 'MoodSelect' },
+            context: {
+                ...context,
+                currentMood: null,
+                currentNotes: null,
+                latestTextAnalysis: null,
+            },
+        };
+    }
+
     switch (state.domain) {
         case "Onboarding":
             return handleOnboardingTransition(state, context, event);
 
         case "CheckIn":
-            //TODO: return handleCheckInTransition(state,context,event);
-            return { state, context };
+            return handleCheckInTransition(state, context, event);
 
         case "SOS":
             //TODO: return handleSosTransition(state,context,event);
