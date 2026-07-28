@@ -1,0 +1,21 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "feature/AI",
+    "feature/backend-fsm",
+    "main",
+    "origin"
+  ],
+  "parent": {
+    "feature/AI": "main",
+    "feature/backend-fsm": "main",
+    "main": null,
+    "origin": "main"
+  },
+  "order": [
+    "main",
+    "feature/AI",
+    "feature/backend-fsm",
+    "origin"
+  ]
+}

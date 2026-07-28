@@ -1,4 +1,5 @@
 import type { UserProfiles } from "../../types/global";
+import type { LocalTextAnalysis } from "../../ai/inference.service";
 
 export type AppState =
     | { domain: 'Onboarding'; step: 'Welcome' }
@@ -19,6 +20,7 @@ export type AppEvent =
     | { type: 'ONBOARDING_THEME_SELECTED'; theme: UserProfiles['themePreferences'] }
     | { type: 'CHECKIN_STARTED' }
     | { type: 'CHECKIN_MOOD_SELECTED'; mood: string }
+    | { type: 'CHECKIN_TEXT_ANALYZED'; analysis: LocalTextAnalysis }
     | { type: 'CHECKIN_FOLLOWUP_SUBMITTED'; notes?: string }
     | { type: 'CHECKIN_RESET' }
     | { type: 'SOS_TRIGGERED' }
@@ -31,6 +33,7 @@ export interface AppContext {
     profile: UserProfiles | null;       // null until onboarding completes
     currentMood: string | null;        // set during CheckIn.MoodSelect
     currentNotes: string | null;       // set during CheckIn.FollowUp
+    latestTextAnalysis: LocalTextAnalysis | null; // local AI severity/context helper output
     sosConsentTimestamp: number | null; // when consent was granted, for audit
 }
 
@@ -43,6 +46,7 @@ export const initialContext: AppContext = {
     profile: null,
     currentMood: null,
     currentNotes: null,
+    latestTextAnalysis: null,
     sosConsentTimestamp: null,
 };
 
