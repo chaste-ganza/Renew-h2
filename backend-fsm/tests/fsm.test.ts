@@ -1,4 +1,3 @@
-// tests/fsm.test.ts
 import { describe, it, expect } from 'bun:test';
 import { transition } from '@core/fsm/machine';
 import { initialState, initialContext, type MachineState } from '@core/fsm/types';
