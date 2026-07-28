@@ -1,3 +1,4 @@
+import type { EncryptedPayload } from "@security/crypto.services";
 export interface UserProfile {
     id: string;
     displayName: string;
@@ -19,4 +20,12 @@ export interface FsmSnapshot {
     profileId: string;
     savedAt: number;
     serializedState: string;
+}
+
+export interface StoredProfile {
+    id: string;
+    displayName: EncryptedPayload;
+    ageRange: EncryptedPayload;
+    createdAt: number;
+    themePreference: UserProfile['themePreference'];
 }

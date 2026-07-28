@@ -1,15 +1,7 @@
 import { db } from '@db/dexie.client';
-import { type EncryptedPayload, encryptField, decryptField } from '@security/crypto.services';
+import { encryptField, decryptField } from '@security/crypto.services';
 import { getSessionKey } from '@security/keyManager';
-import type { UserProfile } from '../../types/global';
-
-interface StoredProfile {
-    id: string;
-    displayName: EncryptedPayload;
-    ageRange: EncryptedPayload;
-    createdAt: number;
-    themePreference: UserProfile['themePreference'];
-}
+import type { UserProfile, StoredProfile } from '../../types/global';
 
 async function toStoredProfile(profile: UserProfile): Promise<StoredProfile> {
     const key = getSessionKey();
