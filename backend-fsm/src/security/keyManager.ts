@@ -29,3 +29,24 @@ export async function deriveKeyFromPassphrase(
 
     return derivedKey;
 }
+
+export function setSessionKey(key: CryptoKey): void {
+    sessionKey = key
+}
+
+export function getSessionKey(): CryptoKey {
+    if (!sessionKey) {
+        throw new Error(
+            "No session Key set yet. User must unlock their profiles."
+        )
+    }
+    return sessionKey;
+}
+
+export function clearSessionKey(): void {
+    sessionKey = null;
+}
+
+export function generateSalt(): Uint8Array {
+    return crypto.getRandomValues(new Uint8Array(16));
+}
