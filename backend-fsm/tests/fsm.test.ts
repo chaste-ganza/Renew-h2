@@ -40,7 +40,6 @@ describe('Onboarding flow', () => {
         machine = { state: result.state, context: result.context };
         expect(machine.state).toEqual({ domain: 'Onboarding', step: 'ThemeSelect' });
 
-        // ThemeSelect -> Complete (this one should also trigger an effect)
         result = transition(machine, {
             type: 'ONBOARDING_THEME_SELECTED',
             theme: 'companion',
