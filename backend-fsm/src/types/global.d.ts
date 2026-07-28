@@ -1,9 +1,9 @@
-export interface UserProfiles {
-    id: String;
-    displayName: String;
+export interface UserProfile {
+    id: string;
+    displayName: string;
     ageRange: '13-17' | '18-24' | '25-34' | '35+';
     createdAt: number;
-    themePreferences: 'companion' | 'aesthetic'
+    themePreference: 'companion' | 'aesthetic'
 }
 
 export interface CheckInRecord {
