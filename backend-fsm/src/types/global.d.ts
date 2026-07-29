@@ -29,3 +29,18 @@ export interface StoredProfile {
     createdAt: number;
     themePreference: UserProfile['themePreference'];
 }
+
+export interface StoredChekInRecord {
+    id: string,
+    profileId: string,
+    timestamp: number,
+    mood: EncryptedPayload,
+    notes: EncryptedPayload | null
+}
+
+export interface StoredFsmSnapShot {
+    id: string,
+    profileId: string,
+    savedAt: number
+    serializedState: EncryptedPayload
+}
