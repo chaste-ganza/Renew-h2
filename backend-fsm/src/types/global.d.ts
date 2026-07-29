@@ -30,7 +30,7 @@ export interface StoredProfile {
     themePreference: UserProfile['themePreference'];
 }
 
-export interface StoredChekInRecord {
+export interface StoredCheckInRecord {
     id: string,
     profileId: string,
     timestamp: number,
@@ -38,7 +38,7 @@ export interface StoredChekInRecord {
     notes: EncryptedPayload | null
 }
 
-export interface StoredFsmSnapShot {
+export interface StoredFsmSnapshot {
     id: string,
     profileId: string,
     savedAt: number
