@@ -28,6 +28,7 @@ export interface StoredProfile {
     ageRange: EncryptedPayload;
     createdAt: number;
     themePreference: UserProfile['themePreference'];
+    salt: string;
 }
 
 export interface StoredCheckInRecord {
