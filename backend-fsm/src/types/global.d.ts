@@ -28,4 +28,20 @@ export interface StoredProfile {
     ageRange: EncryptedPayload;
     createdAt: number;
     themePreference: UserProfile['themePreference'];
+    salt: string;
+}
+
+export interface StoredCheckInRecord {
+    id: string,
+    profileId: string,
+    timestamp: number,
+    mood: EncryptedPayload,
+    notes: EncryptedPayload | null
+}
+
+export interface StoredFsmSnapshot {
+    id: string,
+    profileId: string,
+    savedAt: number
+    serializedState: EncryptedPayload
 }

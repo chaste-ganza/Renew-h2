@@ -2,7 +2,7 @@ export interface EncryptedPayload {
     ciphertext: string;
     iv: string;
 }
-function bufferToBase64(buffer: ArrayBuffer): string {
+export function bufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
     let binary = '';
     for (const byte of bytes) {
@@ -10,7 +10,7 @@ function bufferToBase64(buffer: ArrayBuffer): string {
     }
     return btoa(binary);
 }
-function base64ToBuffer(base64: string): ArrayBuffer {
+export function base64ToBuffer(base64: string): ArrayBuffer {
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {
