@@ -1,4 +1,3 @@
-// src/core/fsm/actions/sideEffects.ts
 import * as profileRepo from '@db/repositories/profile.repo';
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
