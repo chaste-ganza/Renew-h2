@@ -1,4 +1,4 @@
-import type { AppState, AppContext, AppEvent } from "../types";
+import type { AppState, AppEvent, AppContext } from '@core/fsm/types';
 
 export interface TransitionResult {
     state: AppState;
@@ -15,8 +15,20 @@ export function handleOnboardingTransition(
         case 'Welcome':
             if (event.type === 'ONBOARDING_NEXT') {
                 return {
-                    state: { domain: 'Onboarding', step: 'AgeInput' },
+                    state: { domain: 'Onboarding', step: 'PassphraseSetup' },
                     context,
+                };
+            }
+            break;
+
+        case 'PassphraseSetup':
+            if (event.type === 'ONBOARDING_PASSPHRASE_SET') {
+                return {
+                    state: { domain: 'Onboarding', step: 'AgeInput' },
+                    context: {
+                        ...context,
+                        pendingSalt: event.saltBase64,
+                    },
                 };
             }
             break;

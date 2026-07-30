@@ -2,7 +2,7 @@ import type { UserProfile } from "../../types/global";
 
 export type AppState =
     | { domain: 'Onboarding'; step: 'Welcome' }
-    | { domain: 'Onboarding'; step: 'PassphraseSetip' }
+    | { domain: 'Onboarding'; step: 'PassphraseSetup' }
     | { domain: 'Onboarding'; step: 'AgeInput' }
     | { domain: 'Onboarding'; step: 'ThemeSelect' }
     | { domain: 'Onboarding'; step: 'Complete' }
