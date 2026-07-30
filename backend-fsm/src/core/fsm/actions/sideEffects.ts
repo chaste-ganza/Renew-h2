@@ -1,3 +1,4 @@
+// src/core/fsm/actions/sideEffects.ts
 import * as profileRepo from '@db/repositories/profile.repo';
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
@@ -30,6 +31,14 @@ export async function runSideEffects(
 }
 
 async function handleCreateProfile(context: AppContext): Promise<AppContext> {
+    if (!context.pendingSalt) {
+        throw new Error(
+            '[sideEffects] Cannot create profile: no pendingSalt in context. ' +
+            'beginNewSession() must run (and its salt stored in context.pendingSalt) ' +
+            'before CREATE_PROFILE fires.'
+        );
+    }
+
     const ageRange = context.profile?.ageRange ?? '18-24'; // sensible fallback
     const themePreference = context.profile?.themePreference ?? 'companion';
 
@@ -41,11 +50,12 @@ async function handleCreateProfile(context: AppContext): Promise<AppContext> {
         themePreference,
     };
 
-    await profileRepo.save(newProfile);
+    await profileRepo.save(newProfile, context.pendingSalt);
 
     return {
         ...context,
         profile: newProfile,
+        pendingSalt: null,
     };
 }
 
