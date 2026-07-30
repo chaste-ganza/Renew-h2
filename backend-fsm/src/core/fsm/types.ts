@@ -2,6 +2,7 @@ import type { UserProfile } from "../../types/global";
 
 export type AppState =
     | { domain: 'Onboarding'; step: 'Welcome' }
+    | { domain: 'Onboarding'; step: 'PassphraseSetip' }
     | { domain: 'Onboarding'; step: 'AgeInput' }
     | { domain: 'Onboarding'; step: 'ThemeSelect' }
     | { domain: 'Onboarding'; step: 'Complete' }
@@ -15,6 +16,7 @@ export type AppState =
 
 export type AppEvent =
     | { type: 'ONBOARDING_NEXT' }
+    | { type: 'ONBOARDING_PASSPHRASE_SET'; saltBase64: string }
     | { type: 'ONBOARDING_AGE_SUBMITTED'; ageRange: UserProfile['ageRange'] }
     | { type: 'ONBOARDING_THEME_SELECTED'; theme: UserProfile['themePreference'] }
     | { type: 'CHECKIN_STARTED' }
