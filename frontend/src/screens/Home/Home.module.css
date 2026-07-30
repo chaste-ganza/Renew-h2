@@ -1,0 +1,169 @@
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4) var(--space-4) var(--space-8);
+  animation: fadeIn var(--transition-normal);
+  gap: var(--space-6);
+}
+
+/* Header Nav */
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.navLink {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  background: var(--color-mist);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-fast);
+}
+
+.navLink:hover {
+  background: var(--color-border);
+}
+
+/* Hero Section */
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.greeting {
+  color: var(--color-text);
+  font-size: var(--text-3xl);
+}
+
+.journeyCount {
+  color: var(--color-success);
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.lastMoodCard {
+  background: var(--color-mist);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--color-accent);
+}
+
+.moodLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  opacity: 0.7;
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.moodQuote {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Primary Action */
+.actionSection {
+  display: flex;
+}
+
+.checkInBtn {
+  width: 100%;
+  background-color: var(--color-accent);
+  color: var(--color-paper);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-5) var(--space-4);
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.checkInBtn:active {
+  transform: scale(0.98);
+  background-color: #27474f; /* darker accent */
+}
+
+/* Activities */
+.sectionTitle {
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+
+.activityGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.activityBtn {
+  background: var(--color-mist);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.activityBtn:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.activityIcon {
+  font-size: 2rem;
+}
+
+.activityText {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Community Voices */
+.voiceCard {
+  background: var(--color-accent-soft);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+}
+
+.voiceTip {
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+
+.voiceAuthor {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
