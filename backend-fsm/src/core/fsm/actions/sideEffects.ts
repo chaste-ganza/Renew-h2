@@ -3,6 +3,7 @@ import * as checkinRepo from '@db/repositories/checkin.repo'
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
 import type { UserProfile } from '../../../types/global';
+import { recordConsent } from '@emergency/consent';
 
 export async function runSideEffects(
     effects: string[] | undefined,
@@ -24,6 +25,10 @@ export async function runSideEffects(
 
             case 'SAVE_CHECKIN':
                 updatedContext = await handleSaveCheckIn(updatedContext);
+                break;
+
+            case 'RECORD_CONSENT':
+                await handleRecordConsent(updatedContext);
                 break;
 
             default:
@@ -78,6 +83,14 @@ async function handleSaveCheckIn(context: AppContext): Promise<AppContext> {
     });
 
     return context;
+}
+
+async function handleRecordConsent(context: AppContext): Promise<void> {
+    if (!context.profile) {
+        console.warn('[sideEffects] Cannot record consent: no profile in context.');
+        return;
+    }
+    await recordConsent(context.profile.id);
 }
 
 async function handlePersistSnapshot(context: AppContext): Promise<void> {
