@@ -1,6 +1,7 @@
 import type { AppEvent, MachineState } from '@core/fsm/types';
 import { handleOnboardingTransition, type TransitionResult } from './states/onboarding.states';
 import { handleCheckInTransition } from './states/checking.states';
+import { handleSosTransition } from './states/sos.states';
 
 export function transition(
     current: MachineState,
@@ -30,8 +31,7 @@ export function transition(
             return handleCheckInTransition(state, context, event);
 
         case 'SOS':
-            // TODO: return handleSosTransition(state, context, event);
-            return { state, context };
+            return handleSosTransition(state, context, event);
 
         default: {
             const _exhaustive: never = state;
