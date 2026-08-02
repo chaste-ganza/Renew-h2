@@ -1,4 +1,5 @@
 import * as profileRepo from '@db/repositories/profile.repo';
+import * as checkinRepo from '@db/repositories/checkin.repo'
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
 import type { UserProfile } from '../../../types/global';
@@ -21,6 +22,10 @@ export async function runSideEffects(
                 await handlePersistSnapshot(updatedContext);
                 break;
 
+            case 'SAVE_CHECKIN':
+                updatedContext = await handleSaveCheckIn(updatedContext);
+                break;
+
             default:
                 console.warn(`[sideEffects] Unknown effect: "${effect}"`);
         }
@@ -38,12 +43,12 @@ async function handleCreateProfile(context: AppContext): Promise<AppContext> {
         );
     }
 
-    const ageRange = context.profile?.ageRange ?? '18-24'; // sensible fallback
+    const ageRange = context.profile?.ageRange ?? '18-24';
     const themePreference = context.profile?.themePreference ?? 'companion';
 
     const newProfile: UserProfile = {
         id: crypto.randomUUID(),
-        displayName: context.profile?.displayName ?? 'Friend', // placeholder until a display-name step exists
+        displayName: context.profile?.displayName ?? 'Friend',
         ageRange,
         createdAt: Date.now(),
         themePreference,
@@ -56,6 +61,23 @@ async function handleCreateProfile(context: AppContext): Promise<AppContext> {
         profile: newProfile,
         pendingSalt: null,
     };
+}
+
+async function handleSaveCheckIn(context: AppContext): Promise<AppContext> {
+    if (!context.profile || context.currentMood == null) {
+        console.warn('[sideEffects] Cannot save check-in: missing profile or mood.');
+        return context;
+    }
+
+    await checkinRepo.save({
+        id: crypto.randomUUID(),
+        profileId: context.profile.id,
+        timestamp: Date.now(),
+        mood: context.currentMood,
+        ...(context.currentNotes !== null ? { notes: context.currentNotes } : {}),
+    });
+
+    return context;
 }
 
 async function handlePersistSnapshot(context: AppContext): Promise<void> {
