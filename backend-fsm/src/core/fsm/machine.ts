@@ -1,5 +1,7 @@
-import type { AppEvent, MachineState } from "./types";
-import { handleOnboardingTransition, type TransitionResult } from "./states/onboarding.states";
+import type { AppEvent, MachineState } from '@core/fsm/types';
+import { handleOnboardingTransition, type TransitionResult } from './states/onboarding.states';
+import { handleCheckInTransition } from './states/checking.states';
+import { handleSosTransition } from './states/sos.states';
 
 export function transition(
     current: MachineState,
@@ -7,22 +9,33 @@ export function transition(
 ): TransitionResult {
     const { state, context } = current;
 
+    if (event.type === 'CHECKIN_STARTED') {
+        return {
+            state: { domain: 'CheckIn', step: 'MoodSelect' },
+            context: { ...context, currentMood: null, currentNotes: null },
+        };
+    }
+
+    if (event.type === 'SOS_TRIGGERED') {
+        return {
+            state: { domain: 'SOS', step: 'ConsentPending' },
+            context,
+        };
+    }
+
     switch (state.domain) {
-        case "Onboarding":
+        case 'Onboarding':
             return handleOnboardingTransition(state, context, event);
 
-        case "CheckIn":
-            //TODO: return handleCheckInTransition(state,context,event);
-            return { state, context };
+        case 'CheckIn':
+            return handleCheckInTransition(state, context, event);
 
-        case "SOS":
-            //TODO: return handleSosTransition(state,context,event);
-            return { state, context };
+        case 'SOS':
+            return handleSosTransition(state, context, event);
 
-        default:
-            {
-                const _exhaustive: never = state;
-                return { state: _exhaustive, context };
-            }
+        default: {
+            const _exhaustive: never = state;
+            return { state: _exhaustive, context };
+        }
     }
 }

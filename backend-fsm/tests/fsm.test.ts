@@ -7,18 +7,45 @@ describe('Onboarding flow', () => {
         expect(initialState).toEqual({ domain: 'Onboarding', step: 'Welcome' });
     });
 
-    it('moves from Welcome to AgeInput on ONBOARDING_NEXT', () => {
+    it('moves from Welcome to PassphraseSetup on ONBOARDING_NEXT', () => {
         const start: MachineState = { state: initialState, context: initialContext };
 
         const result = transition(start, { type: 'ONBOARDING_NEXT' });
 
-        expect(result.state).toEqual({ domain: 'Onboarding', step: 'AgeInput' });
+        expect(result.state).toEqual({ domain: 'Onboarding', step: 'PassphraseSetup' });
         expect(result.context).toEqual(initialContext);
     });
 
-    it('ignores irrelevant events at the current step (no-op)', () => {
+    it('moves from PassphraseSetup to AgeInput and stores pendingSalt', () => {
+        const start: MachineState = {
+            state: { domain: 'Onboarding', step: 'PassphraseSetup' },
+            context: initialContext,
+        };
+
+        const result = transition(start, {
+            type: 'ONBOARDING_PASSPHRASE_SET',
+            saltBase64: 'fake-salt-for-testing',
+        });
+
+        expect(result.state).toEqual({ domain: 'Onboarding', step: 'AgeInput' });
+        expect(result.context.pendingSalt).toBe('fake-salt-for-testing');
+    });
+
+    it('SOS_TRIGGERED interrupts from ANY state, including mid-onboarding', () => {
         const start: MachineState = { state: initialState, context: initialContext };
+
         const result = transition(start, { type: 'SOS_TRIGGERED' });
+
+        expect(result.state).toEqual({ domain: 'SOS', step: 'ConsentPending' });
+    });
+
+    it('ignores truly irrelevant events at the current step (no-op)', () => {
+        const start: MachineState = { state: initialState, context: initialContext };
+
+        const result = transition(start, {
+            type: 'CHECKIN_MOOD_SELECTED',
+            mood: 'happy',
+        });
 
         expect(result.state).toEqual(initialState);
     });
@@ -26,10 +53,19 @@ describe('Onboarding flow', () => {
     it('runs the full onboarding sequence end-to-end', () => {
         let machine: MachineState = { state: initialState, context: initialContext };
 
-        // Welcome -> AgeInput
+        // Welcome -> PassphraseSetup
         let result = transition(machine, { type: 'ONBOARDING_NEXT' });
         machine = { state: result.state, context: result.context };
+        expect(machine.state).toEqual({ domain: 'Onboarding', step: 'PassphraseSetup' });
+
+        // PassphraseSetup -> AgeInput
+        result = transition(machine, {
+            type: 'ONBOARDING_PASSPHRASE_SET',
+            saltBase64: 'fake-salt-for-testing',
+        });
+        machine = { state: result.state, context: result.context };
         expect(machine.state).toEqual({ domain: 'Onboarding', step: 'AgeInput' });
+        expect(machine.context.pendingSalt).toBe('fake-salt-for-testing');
 
         // AgeInput -> ThemeSelect
         result = transition(machine, {

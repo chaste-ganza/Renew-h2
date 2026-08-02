@@ -45,3 +45,9 @@ export interface StoredFsmSnapshot {
     savedAt: number
     serializedState: EncryptedPayload
 }
+
+export interface ConsentRecord {
+    id: string;
+    profileId: string;
+    grantedAt: number;
+}
