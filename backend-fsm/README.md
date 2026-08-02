@@ -126,11 +126,9 @@ backend-fsm/
 │       └── index.html                   # ⏳ empty placeholder
 │
 └── tests/
-    ├── fsm.test.ts                      # ✅ 11 tests passing — Onboarding, CheckIn, SOS
-    ├── db.test.ts                       # ⏳ empty placeholder
-    └── ai.test.ts                       # ⏳ empty placeholder
-```
-
+    ├── fsm.test.ts                      # Unit tests for state machine transitions
+    ├── db.test.ts                       # Unit tests for Dexie repositories
+    └── ai.test.ts                       # Unit tests / mocks for AI pipeline output shape
 ---
 
 ## 4. Architectural Principles
@@ -154,7 +152,10 @@ they work from any state:
 - `SOS_TRIGGERED` — the emergency flow must be reachable from
   literally any point in the app, no exceptions
 
-### 4.3 `core/fsm/emitter.ts` is the ONE integration point
+Keeping this as a single, stable, well-typed surface means my internal
+refactors (new states, new side effects, swapping the DB layer, etc.)
+never break the UI team's code, as long as this contract doesn't change
+shape.
 
 Exposes `engine.subscribe(listener)` and `engine.dispatch(event)`.
 Internal state is `private` — enforced by TypeScript, not just
@@ -213,24 +214,15 @@ bun test
 
 | Milestone | Status |
 |---|---|
-| Project scaffolding (Bun + Vite + TS, shared monorepo config) | ✅ Done |
+| Project scaffolding (Bun + Vite + TS) | ✅ Done |
+| Role-scoped directory structure | ✅ Done |
+| Dependencies installed (Dexie, WebLLM, PWA plugin) | ✅ Done |
 | Core type definitions (`types/global.d.ts`, `core/fsm/types.ts`) | ✅ Done |
-| FSM — Onboarding domain (incl. passphrase step) | ✅ Done |
-| FSM — CheckIn domain | ✅ Done |
-| FSM — SOS domain + consent audit trail | ✅ Done |
-| FSM — Theme domain | ⏳ Not started |
-| Global event routing (SOS_TRIGGERED, CHECKIN_STARTED) | ✅ Done |
-| Dexie schema & repositories (profile, check-in, snapshot) | ✅ Done |
-| Encryption (AES-GCM) + passphrase key derivation (PBKDF2) | ✅ Done |
-| Session unlock flow (`session.ts`) | ✅ Done (not yet called from `main.ts`) |
-| RAM auto-purge listeners (`purge.ts`) | ✅ Written, ⏳ not yet wired into `main.ts` |
-| `core/fsm/emitter.ts` + `uiConfig.ts` (public engine API) | ✅ Done |
-| `sideEffects.ts` (CREATE_PROFILE, SAVE_CHECKIN, PERSIST_SNAPSHOT, RECORD_CONSENT) | ✅ Done |
-| Unit tests (`fsm.test.ts`) | ✅ 11/11 passing |
-| `main.ts` — actual app boot sequence | ⏳ Not started |
-| Boot-time profile/salt bootstrap record | ⏳ Not started (open design question) |
-| Snapshot **restore** on boot  | ⏳ Not started |
-| WebLLM AI pipeline | ⏳ Not started |
+| FSM transition engine (`core/fsm/machine.ts`) | ✅ Done |
+| Integration emitter (`core/fsm/emitter.ts`) | ⏳ Not started |
+| Dexie schema & repositories | ⏳ Not started |
+| Encryption / key management / RAM purge | ⏳ Not started |
+| WebLLM integration | ⏳ Not started |
 | WebRTC connection hooks | ⏳ Not started |
 | `db.test.ts` / `ai.test.ts` | ⏳ Empty placeholders |
 | `test-harness/index.html` | ⏳ Empty placeholder |

@@ -3,8 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { SOS } from './SOS';
 
 describe('SOS', () => {
-  it('renders the screen name', () => {
+  it('renders the emergency contacts', () => {
     render(<SOS />);
-    expect(screen.getByText('SOS')).toBeTruthy();
+    expect(screen.getByText('You are not alone.')).toBeTruthy();
+    expect(screen.getByText('Call 114')).toBeTruthy();
   });
 });

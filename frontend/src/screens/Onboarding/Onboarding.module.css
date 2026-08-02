@@ -1,0 +1,200 @@
+.onboardingContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-4);
+  background-color: var(--color-mist); /* Shell background */
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn var(--transition-normal);
+  width: 100%;
+}
+
+.title {
+  font-size: var(--text-2xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  opacity: 0.7;
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+/* Privacy Card */
+.privacyCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
+  width: 100%;
+}
+
+.privacyTitle {
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.privacyList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.privacyList li {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+}
+
+.privacyList li::before {
+  content: '✓';
+  color: var(--color-success);
+  font-weight: bold;
+  margin-right: var(--space-2);
+}
+
+.privacyNote {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  opacity: 0.7;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-3);
+}
+
+/* Passkey Grid */
+.wordGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  width: 100%;
+}
+
+.wordChip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.wordChip.selected {
+  background: var(--color-accent);
+  color: var(--color-paper);
+  border-color: var(--color-accent);
+}
+
+.selectedWords {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+  min-height: 2rem;
+  text-align: center;
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+/* Language Selection */
+.languageList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  margin-bottom: var(--space-8);
+}
+
+.langOption {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.langOption.langSelected {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+/* Buttons */
+.actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.primaryButton {
+  width: 100%;
+  background-color: var(--color-accent);
+  color: var(--color-paper);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: var(--space-4);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-fast);
+  margin-top: auto;
+}
+
+.primaryButton:disabled {
+  background-color: var(--color-border);
+  color: var(--color-text);
+  opacity: 0.5;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  width: 100%;
+  background-color: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-4);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
