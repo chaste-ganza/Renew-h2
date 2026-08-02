@@ -3,46 +3,46 @@
 > The State Engine, Local Data Layer, AI Pipeline, and Security/Lifecycle
 > module for ReNew — a 100% offline-first, privacy-first companion app.
 > Built by the **Lead Backend & State Engineer**. UI is owned and built by
-> a separate team consuming this engine's outputs.
+> a separate team (`frontend/`) consuming this engine's outputs.
 
 ---
 
-## 1. Scope of This Folder
+## 1. Scope of This Repository
 
-This folder is **not** the whole ReNew app — it's the backend logic
-engine that the visual UI team binds to. It contains **no page layouts,
-no CSS, and no component design work.**
+This module is **not** the whole ReNew app — it's the backend logic
+engine that the `frontend/` team binds to. It contains **no page
+layouts, no CSS, and no component design work.**
 
-### What this fold owns
+### What this module owns
 
 | Area | Description |
 |---|---|
-| **State Engine (FSM/DFA)** | Deterministic state machine governing Onboarding, Adaptive Theme, Check-In routing, and SOS Consent logic. Emits state + UI config that other teams subscribe to. |
-| **Local Storage & Data Layer** | Dexie.js / IndexedDB schema, encrypted data access objects (Profiles, Check-In Records, FSM Snapshots). |
-| **In-Browser AI Engine** | WebLLM pipeline (`@mlc-ai/web-llm`) for adaptive question rephrasing/diversification based on user demographics — fully on-device, no cloud calls. |
-| **Security, Privacy & Lifecycle** | Web Crypto API encryption, RAM auto-purge listeners (`visibilitychange`, `beforeunload`), and WebRTC connection/signaling *hooks* (not call UI). |
+| **State Engine (FSM/DFA)** | Deterministic state machine governing Onboarding, Check-In, and SOS Consent flows. Emits state + UI config that the frontend subscribes to. |
+| **Local Storage & Data Layer** | Dexie.js / IndexedDB schema, encrypted data access objects (Profiles, Check-In Records, FSM Snapshots, Consent Records). |
+| **In-Browser AI Engine** | WebLLM pipeline (`@mlc-ai/web-llm`) for adaptive question rephrasing — fully on-device, no cloud calls. *(Not yet started.)* |
+| **Security, Privacy & Lifecycle** | Web Crypto encryption, passphrase-derived session keys, RAM auto-purge listeners, WebRTC connection *hooks* (not call UI). |
 
-### What this repo explicitly does NOT own
+### What this module explicitly does NOT own
 
 | Area | Owned by |
 |---|---|
-| Companion Mode / Aesthetic Space visual layouts | UI team |
-| Component styling, CSS, design system | UI team |
-| Screen-level React/HTML views | UI team |
+| Visual UI layouts, screens, components | `frontend/` team |
+| Component styling, CSS, design system | `frontend/` team |
+| Root-level shared config (`tsconfig.base.json`, `eslint.config.js`, etc.) | Whole team, edited by agreement only |
 
-**The integration contract:** the UI team subscribes to this engine's
-state + config output, and sends user input back in as events. They never
-reach into FSM internals, Dexie, WebLLM, or security code directly — all
-of that stays encapsulated here.
+**The integration contract:** the frontend subscribes to this engine's
+state + config output via `core/fsm/emitter.ts`, and sends user input
+back in as events. It never reaches into FSM internals, Dexie, WebLLM,
+or security code directly.
 
 ```
- UI Team's Components
+ frontend/ (React app)
         │
-        │  dispatch(event) ──────────►  ┌────────────────────┐
-        │                                │   THIS REPO:        │
-        │  ◄────── snapshot/uiConfig ────│   FSM + DB + AI +   │
-        │          (subscription)        │   Security Engine   │
-        └────────────────────────────────┴────────────────────┘
+        │  engine.dispatch(event) ──────►  ┌────────────────────┐
+        │                                   │   backend-fsm:      │
+        │  ◄────── engine.subscribe() ──────│   FSM + DB + AI +   │
+        │          (state + uiConfig)        │   Security Engine   │
+        └─────────────────────────────────┴────────────────────┘
 ```
 
 ---
@@ -51,96 +51,85 @@ of that stays encapsulated here.
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| Runtime / package manager | **Bun** | Install/build/dev runtime |
+| Runtime / package manager | **Bun** | Install/build/dev/test runtime |
 | Bundler / dev server | **Vite** | Dev server, HMR, bundling, PWA plugin |
-| Language | **TypeScript** (strict mode) | Type safety across FSM, DB, AI boundaries |
-| State engine | Custom **Mealy machine** (hand-rolled) | Deterministic control of app-wide flows |
-| Storage | **IndexedDB** via **Dexie.js** | Local persistence of profiles, check-ins, FSM snapshots |
-| Local AI | **`@mlc-ai/web-llm`** (WebGPU) | On-device LLM for adaptive question rephrasing |
-| Security | **Web Crypto API** | Encrypt/decrypt sensitive profile fields at rest |
-| Realtime hooks | **WebRTC** (connection/signaling only) | SOS emergency channel plumbing |
+| Language | **TypeScript** (strict mode, shared base config) | Type safety across FSM, DB, AI boundaries |
+| State engine | Custom **Mealy machine** (hand-rolled) | Deterministic control of Onboarding, CheckIn, SOS flows |
+| Storage | **IndexedDB** via **Dexie.js** | Local persistence of profiles, check-ins, snapshots, consent records |
+| Local AI | **`@mlc-ai/web-llm`** (WebGPU) | On-device LLM for adaptive question rephrasing *(planned)* |
+| Security | **Web Crypto API** (AES-GCM + PBKDF2) | Encrypt/decrypt sensitive fields; passphrase-derived session keys |
+| Testing | **`bun:test`** | Unit tests for FSM transitions (Vitest used separately by `frontend/`) |
+| Realtime hooks | **WebRTC** (connection/signaling only) | SOS emergency channel plumbing *(planned)* |
 
 No backend server, no REST/GraphQL API, no cloud database — by design.
 
 ---
 
-## 3. Final Project Structure (Role-Scoped)
+## 3. Project Structure
 
 ```
 backend-fsm/
-├── bun.lockb
+├── bun.lock
 ├── package.json
-├── tsconfig.json
+├── tsconfig.json              # extends ../tsconfig.base.json (shared, root-level)
 ├── vite.config.ts
+├── vitest.config.ts           # excludes bun:test files; frontend/shared tooling
 ├── index.html
 ├── README.md
 │
 ├── src/
-│   ├── main.ts                       # Boots the engine (FSM + DB + AI + Security init).
-│   │                                    NOT a UI mount point — exposes the engine
-│   │                                    for the UI team to import and subscribe to.
+│   ├── main.ts                        # boots the engine — NOT yet implemented
 │   │
 │   ├── core/
 │   │   └── fsm/
-│   │       ├── types.ts               # State, Event, Context type definitions — the FSM's contract
-│   │       ├── machine.ts             # Pure transition engine — no I/O, no side effects
-│   │       ├── emitter.ts             # ★ THE INTEGRATION BOUNDARY.
-│   │       │                            Public subscribe()/dispatch() API + UI config output
-│   │       │                            that the UI team binds their components to.
+│   │       ├── types.ts                 # State / Event / Context contract
+│   │       ├── machine.ts               # pure transition engine + global event routing
+│   │       ├── emitter.ts               # ★ the ONLY integration point for frontend/
+│   │       ├── uiConfig.ts              # maps AppState -> UI-friendly render config
 │   │       ├── states/
-│   │       │   ├── onboarding.states.ts   # Onboarding flow states
-│   │       │   ├── checkin.states.ts      # Check-in flow states
-│   │       │   ├── theme.states.ts        # Adaptive theme state (Companion vs Aesthetic)
-│   │       │   └── sos.states.ts          # SOS/emergency consent states
+│   │       │   ├── onboarding.states.ts   # ✅ Welcome → PassphraseSetup → AgeInput → ThemeSelect → Complete
+│   │       │   ├── checkin.states.ts      # ✅ MoodSelect → FollowUp → Saved
+│   │       │   ├── theme.states.ts        # ⏳ not started
+│   │       │   └── sos.states.ts          # ✅ ConsentPending → ConsentGranted → ConnectingCall
 │   │       └── actions/
-│   │           └── sideEffects.ts     # Effect handlers triggered BY the FSM
-│   │                                    (persist snapshot, call AI, trigger encryption, etc.)
+│   │           └── sideEffects.ts       # CREATE_PROFILE, SAVE_CHECKIN, PERSIST_SNAPSHOT, RECORD_CONSENT
 │   │
 │   ├── db/
-│   │   ├── schema.ts                   # Dexie table schema definitions
-│   │   ├── dexie.client.ts             # Dexie database instance + version migrations
+│   │   ├── schema.ts                    # v2: profiles, checkins, snapshots, consentRecords
+│   │   ├── dexie.client.ts
 │   │   └── repositories/
-│   │       ├── profile.repo.ts         # CRUD for UserProfile (encrypted fields in/out)
-│   │       ├── checkin.repo.ts         # CRUD for CheckInRecord entries
-│   │       └── snapshot.repo.ts        # Save/restore FSM state snapshots
+│   │       ├── profile.repo.ts          # encrypted, requires saltBase64 on save
+│   │       ├── checkin.repo.ts          # encrypted (mood, notes)
+│   │       └── snapshot.repo.ts         # encrypted (whole serializedState blob)
 │   │
-│   ├── ai/
-│   │   ├── webllm.client.ts            # WebLLM engine lifecycle (load model, init WebGPU)
-│   │   ├── prompt.templates.ts         # Prompt templates: static question → adaptive rephrasing
-│   │   └── inference.service.ts        # High-level API the FSM calls (e.g. `rephraseQuestion()`)
+│   ├── ai/                              # ⏳ not started
+│   │   ├── webllm.client.ts
+│   │   ├── prompt.templates.ts
+│   │   └── inference.service.ts
 │   │
 │   ├── security/
-│   │   ├── crypto.service.ts           # Web Crypto API wrappers: encrypt/decrypt profile fields
-│   │   ├── keyManager.ts               # Derives & holds session encryption key (never persisted raw)
-│   │   ├── purge.ts                    # RAM-purge listeners (`visibilitychange`, `beforeunload`)
-│   │   └── webrtc/
-│   │       ├── signaling.stub.ts       # Connection/signaling hook (plumbing only, no call UI)
-│   │       └── call.service.ts         # Establishes/tears down the data channel; UI team renders the call view
+│   │   ├── crypto.service.ts            # ✅ AES-GCM encrypt/decrypt via Web Crypto
+│   │   ├── keyManager.ts                # ✅ PBKDF2 passphrase → session CryptoKey
+│   │   ├── session.ts                   # ✅ beginNewSession() / unlockExistingSession()
+│   │   ├── purge.ts                     # ✅ visibilitychange/beforeunload listeners — not yet CALLED from main.ts
+│   │   └── webrtc/                      # ⏳ not started
+│   │       ├── signaling.stub.ts
+│   │       └── call.service.ts
 │   │
 │   ├── emergency/
-│   │   └── consent.ts                  # SOS consent capture logic (feeds into FSM as events)
+│   │   └── consent.ts                   # ✅ consentRecords repo — deliberately UNencrypted (audit trail)
 │   │
 │   ├── types/
-│   │   └── global.d.ts                 # Shared interfaces (UserProfile, CheckInRecord, FsmSnapshot)
+│   │   └── global.d.ts                  # UserProfile, CheckInRecord, FsmSnapshot, ConsentRecord + Stored* variants
 │   │
 │   └── test-harness/
-│       └── index.html                  # ★ Minimal, unstyled test wrapper — buttons/console log only,
-│                                          used to manually verify FSM transitions without
-│                                          waiting on the UI team's real components.
+│       └── index.html                   # ⏳ empty placeholder
 │
 └── tests/
-    ├── fsm.test.ts                      # Unit tests for state machine transitions
-    ├── db.test.ts                       # Unit tests for Dexie repositories
-    └── ai.test.ts                       # Unit tests / mocks for AI pipeline output shape
+    ├── fsm.test.ts                      # ✅ 11 tests passing — Onboarding, CheckIn, SOS
+    ├── db.test.ts                       # ⏳ empty placeholder
+    └── ai.test.ts                       # ⏳ empty placeholder
 ```
-
-### What changed from the original full-app structure
-
-- ❌ Removed `ui/components/`, `ui/themes/`, `ui/screens/` — not your responsibility.
-- ❌ Removed `emergency/webrtc/` as a full call-UI folder — replaced with `security/webrtc/` as **connection hooks only** (signaling + data channel setup), since this falls under your "Security, Privacy & Lifecycle" and "WebRTC hooks" responsibility, not call UI.
-- ✅ Added `core/fsm/emitter.ts` explicitly — this is the single most important file for avoiding conflicts with your teammates, since it's the *only* surface they should ever import from.
-- ✅ Added `src/test-harness/` — a plain, unstyled HTML file for you to manually click through states during development, without needing to build or wait for real UI components.
-- ✅ `main.ts` now described as booting the **engine**, not mounting an app UI — since the UI team owns the actual app shell.
 
 ---
 
@@ -149,38 +138,42 @@ backend-fsm/
 ### 4.1 The FSM is pure — no exceptions
 
 `core/fsm/machine.ts` and `core/fsm/states/*` never import from `db/`,
-`ai/`, or `security/`. The machine only knows `State`, `Event`, `Context`.
-Side effects are triggered through `core/fsm/actions/sideEffects.ts`,
-keeping the machine 100% testable without mocking databases or AI models.
+`ai/`, or `security/`. Side effects are triggered through
+`core/fsm/actions/sideEffects.ts`, which is the ONLY place allowed to
+call repository functions. This keeps the machine 100% testable
+without mocking databases or AI — proven out by `fsm.test.ts`.
 
-### 4.2 `core/fsm/emitter.ts` is the ONE integration point
+### 4.2 Global vs. domain-scoped events
 
-This is the boundary the UI team is told to depend on — and *only* this
-file. It should expose something like:
+Most events (`ONBOARDING_NEXT`, `CHECKIN_MOOD_SELECTED`, etc.) are
+handled by whichever domain the machine currently sits in. Two events
+are **global** — checked in `machine.ts` *before* domain routing, so
+they work from any state:
 
-```ts
-interface EngineSnapshot {
-  state: AppState;             // current FSM state
-  uiConfig: UiConfigForState;  // what to render, derived from state
-  dispatch: (event: AppEvent) => void;  // how UI sends input back
-}
-```
+- `CHECKIN_STARTED` — jump into a check-in from anywhere
+- `SOS_TRIGGERED` — the emergency flow must be reachable from
+  literally any point in the app, no exceptions
 
-Keeping this as a single, stable, well-typed surface means your internal
-refactors (new states, new side effects, swapping the DB layer, etc.)
-never break the UI team's code, as long as this contract doesn't change
-shape.
+### 4.3 `core/fsm/emitter.ts` is the ONE integration point
 
-### 4.3 Nothing outside `db/` talks to Dexie directly
+Exposes `engine.subscribe(listener)` and `engine.dispatch(event)`.
+Internal state is `private` — enforced by TypeScript, not just
+convention. The frontend team should never import from `machine.ts`,
+`db/`, `ai/`, or `security/` directly.
 
-Only `db/repositories/*` call Dexie. The FSM calls `profileRepo.save(...)`,
-never `db.table.add(...)` directly.
+### 4.4 Encryption boundary
 
-### 4.4 Sensitive fields are encrypted before they reach Dexie
+`security/crypto.service.ts` (AES-GCM) + `security/keyManager.ts`
+(PBKDF2 passphrase-derived keys) handle all encrypt/decrypt. Each
+repository (`profile.repo.ts`, `checkin.repo.ts`, `snapshot.repo.ts`)
+converts between the plain in-memory type and its encrypted `Stored*`
+counterpart — nothing outside the repository layer ever sees
+ciphertext or ever calls Dexie directly.
 
-Identity/consent data passes through `security/crypto.service.ts` before
-being persisted, and is decrypted only in memory. Raw keys are never
-persisted (`security/keyManager.ts`).
+**Exception:** `emergency/consent.ts`'s `consentRecords` table is
+**deliberately unencrypted** — a consent audit trail needs to remain
+provable even if a session key is ever lost, unlike content data
+(moods, notes, names) where privacy is the priority.
 
 ### 4.5 Path aliases
 
@@ -193,26 +186,26 @@ persisted (`security/keyManager.ts`).
 @types/*     → src/types/*
 ```
 
-Defined in both `tsconfig.json` (`compilerOptions.paths`) and
-`vite.config.ts` (`resolve.alias`) — must stay in sync.
+Defined in `tsconfig.json` (`paths`) and `vite.config.ts`
+(`resolve.alias`) — must stay in sync. `tsconfig.json` extends the
+shared root `tsconfig.base.json`; only module-specific settings
+(`types: ["bun"]`, path aliases, `include`) live in this module's own
+config.
 
 ---
 
 ## 5. Setup Instructions
 
 ```bash
-git clone <repo-url>
 cd backend-fsm
 bun install
 bun run dev
+bun test
 ```
 
-Open `http://localhost:5173/src/test-harness/index.html` (once built) to
-manually exercise FSM states without needing the real UI.
-
 > **Windows users:** avoid OneDrive-synced folders (e.g. default
-> `Documents`) — causes Vite dev-server restart loops and can corrupt
-> `node_modules`. Use a plain local path like `C:\Dev\backend-fsm`.
+> `Documents`) — causes Vite dev-server restart loops. Clone/keep the
+> repo on a plain local path.
 
 ---
 
@@ -220,62 +213,105 @@ manually exercise FSM states without needing the real UI.
 
 | Milestone | Status |
 |---|---|
-| Project scaffolding (Bun + Vite + TS) | ✅ Done |
-| Role-scoped directory structure | ✅ Done |
-| Dependencies installed (Dexie, WebLLM, PWA plugin) | ✅ Done |
-| Core type definitions (`types/global.d.ts`, `core/fsm/types.ts`) | 🔄 In progress |
-| FSM transition engine (`core/fsm/machine.ts`) | ⏳ Not started |
-| Integration emitter (`core/fsm/emitter.ts`) | ⏳ Not started |
-| Dexie schema & repositories | ⏳ Not started |
-| Encryption / key management / RAM purge | ⏳ Not started |
-| WebLLM integration | ⏳ Not started |
+| Project scaffolding (Bun + Vite + TS, shared monorepo config) | ✅ Done |
+| Core type definitions (`types/global.d.ts`, `core/fsm/types.ts`) | ✅ Done |
+| FSM — Onboarding domain (incl. passphrase step) | ✅ Done |
+| FSM — CheckIn domain | ✅ Done |
+| FSM — SOS domain + consent audit trail | ✅ Done |
+| FSM — Theme domain | ⏳ Not started |
+| Global event routing (SOS_TRIGGERED, CHECKIN_STARTED) | ✅ Done |
+| Dexie schema & repositories (profile, check-in, snapshot) | ✅ Done |
+| Encryption (AES-GCM) + passphrase key derivation (PBKDF2) | ✅ Done |
+| Session unlock flow (`session.ts`) | ✅ Done (not yet called from `main.ts`) |
+| RAM auto-purge listeners (`purge.ts`) | ✅ Written, ⏳ not yet wired into `main.ts` |
+| `core/fsm/emitter.ts` + `uiConfig.ts` (public engine API) | ✅ Done |
+| `sideEffects.ts` (CREATE_PROFILE, SAVE_CHECKIN, PERSIST_SNAPSHOT, RECORD_CONSENT) | ✅ Done |
+| Unit tests (`fsm.test.ts`) | ✅ 11/11 passing |
+| `main.ts` — actual app boot sequence | ⏳ Not started |
+| Boot-time profile/salt bootstrap record | ⏳ Not started (open design question) |
+| Snapshot **restore** on boot  | ⏳ Not started |
+| WebLLM AI pipeline | ⏳ Not started |
 | WebRTC connection hooks | ⏳ Not started |
-| Minimal test harness | ⏳ Not started |
+| `db.test.ts` / `ai.test.ts` | ⏳ Empty placeholders |
+| `test-harness/index.html` | ⏳ Empty placeholder |
 
 ---
 
 ## 7. Data Model Overview (`src/types/global.d.ts`)
 
-| Type | Purpose |
-|---|---|
-| `UserProfile` | Decrypted, in-memory profile shape. Encrypted before persistence via `security/crypto.service.ts`. |
-| `CheckInRecord` | A single check-in entry (mood, optional notes, timestamp), linked to a profile. |
-| `FsmSnapshot` | Serialized FSM `State` + `Context`, allowing resume-on-reload. |
+| Type | Purpose | Encrypted? |
+|---|---|---|
+| `UserProfile` | Decrypted, in-memory profile shape | Fields encrypted at rest (`displayName`, `ageRange`) |
+| `CheckInRecord` | One check-in entry (mood, optional notes, timestamp) | Fields encrypted at rest (`mood`, `notes`) |
+| `FsmSnapshot` | Serialized FSM `State` + `Context`, for resume-on-reload | Whole blob encrypted at rest |
+| `ConsentRecord` | SOS consent audit entry (profileId, timestamp) | **Not encrypted** — audit trail durability |
+
+Each has a corresponding `Stored*` type (`StoredProfile`,
+`StoredCheckInRecord`, `StoredFsmSnapshot`) representing the actual
+encrypted shape persisted in Dexie — only the relevant repository file
+ever constructs or reads these directly.
 
 ---
 
-## 8. Integration Guidelines for the UI Team (Read-Only Reference)
+## 8. Known Open Questions / Design Decisions Pending Team Input
 
-- Import only from `core/fsm/emitter.ts`. Never import from `core/fsm/machine.ts`,
-  `db/`, `ai/`, or `security/` directly.
-- Subscribe to state changes; render based on `uiConfig`, not raw `state`
-  where possible (config is designed to be UI-friendly; state is not).
-- Send user actions back via `dispatch(event)` — never mutate engine state
-  directly.
-- Any new UI need (e.g. "we need a new field in the config output") should
-  be requested as a change to `emitter.ts`'s output shape, not worked
-  around in UI code.
-
----
-
-## 9. Contribution Guidelines (Backend Engine Scope Only)
-
-- Never call Dexie, WebLLM, or Web Crypto APIs directly from `core/fsm/` —
-  route all side effects through `core/fsm/actions/sideEffects.ts`.
-- All new states/events go into `core/fsm/types.ts` first, before any
-  implementation references them.
-- Sensitive data types must be encrypted via `security/crypto.service.ts`
-  before being passed to any `db/repositories/*` save function.
-- Run `bun run dev` and confirm a clean console before opening a PR.
-- New logic in `core/fsm/` requires a corresponding test in `tests/fsm.test.ts`.
-- Do not add UI components, CSS, or page layouts to this repo — that
-  belongs in the UI team's repository/module.
+- **`purgeOnHide` default** (`security/purge.ts`): should switching
+  tabs/apps purge the session key immediately (stricter, more
+  re-unlocking), or only on actual tab close (`beforeunload`, current
+  default)? Worth deciding given this app's sensitive-data context.
+- **Consent records left unencrypted** (`emergency/consent.ts`): a
+  deliberate tradeoff favoring audit-trail durability over privacy for
+  this one table. Flagging for team review.
+- **Boot-time bootstrap record**: `main.ts` needs *some* small,
+  unencrypted way to know which `profileId`/salt to attempt unlocking
+  on app launch, before any session key exists. Not yet designed —
+  candidates are `localStorage` or a small dedicated Dexie table.
+- **No display-name collection step in onboarding**: `sideEffects.ts`
+  currently falls back to a placeholder name (`"Friend"`). Decide
+  whether a real name-entry step is needed, or whether this app should
+  deliberately avoid asking for real names.
 
 ---
 
-## 10. Privacy Principle
+## 9. Integration Guidelines for the Frontend Team (Read-Only Reference)
 
-Zero network persistence: no analytics, no telemetry, no remote logging,
-no cloud sync of user data. Any feature introducing a network call to a
-third-party service must be flagged and reviewed against this principle
-before merging.
+- Import only from `core/fsm/emitter.ts` (the exported `engine`
+  instance). Never import from `machine.ts`, `db/`, `ai/`, or
+  `security/` directly.
+- `engine.subscribe(listener)` — call once per component/mount; fires
+  immediately with the current snapshot, then again on every
+  `dispatch()`. Returns an unsubscribe function.
+- `engine.dispatch(event)` — the only way to send user input in.
+  `async` — side effects (Dexie writes) complete before subscribers
+  are notified.
+- Render from `snapshot.uiConfig`, not raw `snapshot.state`, wherever
+  possible — `uiConfig` is designed to be UI-friendly and stable even
+  if internal state names change.
+
+---
+
+## 10. Contribution Guidelines (Backend Engine Scope Only)
+
+- Never call Dexie, WebLLM, or Web Crypto APIs directly from
+  `core/fsm/` — route all side effects through
+  `core/fsm/actions/sideEffects.ts`.
+- All new states/events go into `core/fsm/types.ts` first.
+- Sensitive data types must be encrypted via
+  `security/crypto.service.ts` before being passed to any
+  `db/repositories/*` save function — unless there's a deliberate,
+  documented reason not to (see `emergency/consent.ts`).
+- Run `bunx tsc --noEmit` and `bun test` clean before opening a PR.
+- New logic in `core/fsm/` requires a corresponding test in
+  `tests/fsm.test.ts`.
+- Do not add UI components, CSS, or page layouts to this module.
+- Flag open design decisions in commit messages / PR descriptions
+  rather than deciding unilaterally on product-facing tradeoffs.
+
+---
+
+## 11. Privacy Principle
+
+Zero network persistence: no analytics, no telemetry, no remote
+logging, no cloud sync of user data. Any feature introducing a network
+call to a third-party service must be flagged and reviewed against
+this principle before merging.
