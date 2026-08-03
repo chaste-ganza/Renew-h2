@@ -1,24 +1,13 @@
 import type { AppState } from './types';
 
-/**
- * The UI-friendly description of "what to show" for any given state.
- * Deliberately generic/flat — works for any screen type without the
- * UI developer needing a different shape per domain.
- */
 export interface UiConfig {
     title: string;
     subtitle?: string;
-    primaryActionLabel: string;   // label for the "next/continue" button
+    primaryActionLabel: string; // Label for the  next/continue button
     showBackButton: boolean;
     inputType: 'none' | 'passphrase' | 'ageRange' | 'theme' | 'mood' | 'text' | 'consent';
 }
 
-/**
- * Maps every AppState to its UiConfig. One flat lookup function —
- * new states MUST be added here, or getUiConfigForState falls through
- * to the safe default at the bottom (better than crashing, but worth
- * noticing in review if a new state is missing its real config).
- */
 export function getUiConfigForState(state: AppState): UiConfig {
     const key = `${state.domain}.${state.step}`;
 
