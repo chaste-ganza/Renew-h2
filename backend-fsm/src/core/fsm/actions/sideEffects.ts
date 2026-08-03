@@ -1,4 +1,4 @@
-import * as profileRepo from '@db/repositories/profile.repo';
+import * as profileRepo from '../../../db/repositories/profile.repo';
 import * as checkinRepo from '@db/repositories/checkin.repo'
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
