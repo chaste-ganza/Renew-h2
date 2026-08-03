@@ -27,7 +27,8 @@ export type AppEvent =
     | { type: 'SOS_CONSENT_GRANTED' }
     | { type: 'SOS_CONSENT_DENIED' }
     | { type: 'SOS_CALL_CONNECTED' }
-    | { type: 'SOS_CANCELLED' };
+    | { type: 'SOS_CANCELLED' }
+    | { type: 'THEME_CHANGED'; theme: UserProfile['themePreference'] };
 
 export interface AppContext {
     profile: UserProfile | null;       // null until onboarding completes
