@@ -4,7 +4,7 @@ import {
     buildDiversifiedCheckInPrompt,
     SYSTEM_PROMPT,
 } from './prompt.templates';
-import type { UserProfile } from '@types/global';
+import type { UserProfile } from '../types/global';
 import * as checkinRepo from '@db/repositories/checkin.repo';
 
 function isValidRephrase(output: string, originalQuestion: string): boolean {
