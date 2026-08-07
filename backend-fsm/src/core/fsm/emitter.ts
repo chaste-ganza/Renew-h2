@@ -1,10 +1,11 @@
 import { transition } from './machine';
 import { runSideEffects } from './actions/sideEffects';
-import { initialState, initialContext, type AppState, type AppEvent, type MachineState } from './types';
+import { initialState, initialContext, type AppState, type AppEvent, type MachineState, AppContext } from './types';
 import { getUiConfigForState, type UiConfig } from './uiConfig';
 
 export interface EngineSnapshot {
     state: AppState;
+    context: AppContext;
     uiConfig: UiConfig;
 }
 
@@ -38,6 +39,7 @@ class FsmEngine {
     private getSnapshot(): EngineSnapshot {
         return {
             state: this.current.state,
+            context: this.current.context,
             uiConfig: getUiConfigForState(this.current.state),
         };
     }

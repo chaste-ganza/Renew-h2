@@ -31,12 +31,12 @@ export type AppEvent =
     | { type: 'THEME_CHANGED'; theme: UserProfile['themePreference'] };
 
 export interface AppContext {
-    profile: UserProfile | null;       // null until onboarding completes
-    currentMood: string | null;        // set during CheckIn.MoodSelect
-    currentNotes: string | null;       // set during CheckIn.FollowUp
-    sosConsentTimestamp: number | null; // when consent was granted, for audit
+    profile: UserProfile | null;
+    currentMood: string | null;
+    currentNotes: string | null;
+    sosConsentTimestamp: number | null;
     pendingSalt: string | null;
-    checkInQuestion: string | null
+    checkInQuestion: string | null;
 }
 
 export interface MachineState {
@@ -50,7 +50,7 @@ export const initialContext: AppContext = {
     currentNotes: null,
     sosConsentTimestamp: null,
     pendingSalt: null,
-    checkInQuestion: null
+    checkInQuestion: null,
 };
 
 export const initialState: AppState = { domain: 'Onboarding', step: 'Welcome' };
