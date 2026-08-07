@@ -35,7 +35,8 @@ export interface AppContext {
     currentMood: string | null;        // set during CheckIn.MoodSelect
     currentNotes: string | null;       // set during CheckIn.FollowUp
     sosConsentTimestamp: number | null; // when consent was granted, for audit
-    pendingSalt: string | null
+    pendingSalt: string | null;
+    checkInQuestion: string | null
 }
 
 export interface MachineState {
@@ -48,7 +49,8 @@ export const initialContext: AppContext = {
     currentMood: null,
     currentNotes: null,
     sosConsentTimestamp: null,
-    pendingSalt: null
+    pendingSalt: null,
+    checkInQuestion: null
 };
 
 export const initialState: AppState = { domain: 'Onboarding', step: 'Welcome' };

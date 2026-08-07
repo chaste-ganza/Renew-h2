@@ -1,4 +1,3 @@
-// src/core/fsm/machine.ts
 import type { AppEvent, MachineState } from '@core/fsm/types';
 import { handleOnboardingTransition, type TransitionResult } from './states/onboarding.states';
 import { handleCheckInTransition } from './states/checking.states';
@@ -14,6 +13,7 @@ export function transition(
         return {
             state: { domain: 'CheckIn', step: 'MoodSelect' },
             context: { ...context, currentMood: null, currentNotes: null },
+            effects: ['GENERATE_CHECKIN_QUESTION'],
         };
     }
 

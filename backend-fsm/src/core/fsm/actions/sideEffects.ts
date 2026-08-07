@@ -4,6 +4,7 @@ import * as snapshotRepo from '@db/repositories/snapshot.repo';
 import type { AppContext } from '@core/fsm/types';
 import type { UserProfile } from '../../../types/global';
 import { recordConsent } from '@emergency/consent';
+import { getDiversifiedCheckInQuestion } from '@ai/inference.service';
 
 export async function runSideEffects(
     effects: string[] | undefined,
@@ -29,6 +30,10 @@ export async function runSideEffects(
 
             case 'RECORD_CONSENT':
                 await handleRecordConsent(updatedContext);
+                break;
+
+            case 'GENERATE_CHECKIN_QUESTION':
+                updatedContext = await handleGenerateCheckInQuestion(updatedContext);
                 break;
 
             default:
@@ -105,4 +110,19 @@ async function handlePersistSnapshot(context: AppContext): Promise<void> {
         savedAt: Date.now(),
         serializedState: JSON.stringify(context),
     });
+}
+
+const DEFAULT_CHECKIN_QUESTION = "How Are You Doing Today?";
+async function handleGenerateCheckInQuestion(context: AppContext): Promise<AppContext> {
+    if (!context.profile) {
+        return { ...context, checkInQuestion: DEFAULT_CHECKIN_QUESTION };
+    }
+
+    const question = await getDiversifiedCheckInQuestion(
+        DEFAULT_CHECKIN_QUESTION,
+        context.profile.id,
+        context.profile.ageRange
+    );
+
+    return { ...context, checkInQuestion: question };
 }
