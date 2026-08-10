@@ -7,7 +7,7 @@ import {
 import type { UserProfile } from '../types/global';
 import * as checkinRepo from '@db/repositories/checkin.repo';
 
-function isValidRephrase(output: string, originalQuestion: string): boolean {
+export function isValidRephrase(output: string, originalQuestion: string): boolean {
     const trimmed = output.trim();
 
     if (trimmed.length === 0) return false;
@@ -21,7 +21,7 @@ function isValidRephrase(output: string, originalQuestion: string): boolean {
     return true;
 }
 
-function cleanOutput(output: string): string {
+export function cleanOutput(output: string): string {
     return output.trim().replace(/^["']|["']$/g, '');
 }
 
