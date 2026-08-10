@@ -1,6 +1,4 @@
-// tests/db.test.ts
 import { beforeAll, beforeEach, describe, it, expect } from 'bun:test';
-import 'fake-indexeddb/auto'; // polyfills global indexedDB for this test file
 
 import { deriveKeyFromPassphrase, setSessionKey, generateSalt } from '@security/keyManager';
 import * as profileRepo from '@db/repositories/profile.repo';
