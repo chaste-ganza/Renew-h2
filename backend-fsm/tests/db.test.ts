@@ -139,4 +139,3 @@ describe('snapshot.repo', () => {
         expect(result).toBeNull();
     });
 });
-</parameter>
