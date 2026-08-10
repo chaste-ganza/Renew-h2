@@ -60,9 +60,14 @@ class FsmEngine {
      */
     async dispatch(event: AppEvent): Promise<void> {
         const result = transition(this.current, event);
-        const finalContext = await runSideEffects(result.effects, result.context);
 
-        this.current = { state: result.state, context: finalContext };
+        try {
+            const finalContext = await runSideEffects(result.effects, result.context);
+            this.current = { state: result.state, context: finalContext };
+        } catch (error) {
+            console.error('[emitter] Side effect failed during dispatch:', error);
+            this.current = { state: result.state, context: result.context };
+        }
 
         this.notify();
     }

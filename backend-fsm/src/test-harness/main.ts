@@ -1,5 +1,6 @@
 import { engine } from '@core/fsm/emitter';
 import { getBootStatus, initEngine } from '../main';
+import { beginNewSession } from '@security/session';
 
 const output = document.getElementById('output')!;
 const questionEl = document.getElementById('question')!;
@@ -29,11 +30,9 @@ document.querySelectorAll<HTMLButtonElement>('[data-event]').forEach((btn) => {
 // Buttons needing extra payload data get wired individually below,
 // since their event shape isn't just `{ type }`.
 
-document.querySelector('[data-passphrase]')?.addEventListener('click', () => {
-    void engine.dispatch({
-        type: 'ONBOARDING_PASSPHRASE_SET',
-        saltBase64: 'fake-salt-for-harness-testing',
-    });
+document.querySelector('[data-passphrase]')?.addEventListener('click', async () => {
+    const { saltBase64 } = await beginNewSession('test-passphrase-for-harness');
+    void engine.dispatch({ type: 'ONBOARDING_PASSPHRASE_SET', saltBase64 });
 });
 
 document.querySelector<HTMLButtonElement>('[data-age]')?.addEventListener('click', (e) => {
