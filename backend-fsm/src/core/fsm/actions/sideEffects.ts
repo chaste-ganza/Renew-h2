@@ -1,11 +1,20 @@
-import * as profileRepo from '../../../db/repositories/profile.repo';
-import * as checkinRepo from '@db/repositories/checkin.repo'
+import * as profileRepo from '@db/repositories/profile.repo';
+import * as checkinRepo from '@db/repositories/checkin.repo';
 import * as snapshotRepo from '@db/repositories/snapshot.repo';
+import { recordConsent } from '@emergency/consent';
+import { saveBootstrapRecord } from '@security/bootstrap';
+import { getDiversifiedCheckInQuestion } from '@ai/inference.service';
 import type { AppContext } from '@core/fsm/types';
 import type { UserProfile } from '../../../types/global';
-import { recordConsent } from '@emergency/consent';
-import { getDiversifiedCheckInQuestion } from '@ai/inference.service';
 
+const DEFAULT_CHECKIN_QUESTION = 'How are you feeling today?';
+
+/**
+ * Executes the side effects named in an `effects` array (as returned
+ * by transition()). This is the ONLY place in the FSM subsystem that
+ * is allowed to call db/repositories/*, security/*, ai/*, or
+ * emergency/* directly.
+ */
 export async function runSideEffects(
     effects: string[] | undefined,
     context: AppContext
@@ -20,12 +29,12 @@ export async function runSideEffects(
                 updatedContext = await handleCreateProfile(updatedContext);
                 break;
 
-            case 'PERSIST_SNAPSHOT':
-                await handlePersistSnapshot(updatedContext);
-                break;
-
             case 'SAVE_CHECKIN':
                 updatedContext = await handleSaveCheckIn(updatedContext);
+                break;
+
+            case 'PERSIST_SNAPSHOT':
+                await handlePersistSnapshot(updatedContext);
                 break;
 
             case 'RECORD_CONSENT':
@@ -44,6 +53,18 @@ export async function runSideEffects(
     return updatedContext;
 }
 
+/**
+ * Builds a real UserProfile from the partial data collected during
+ * onboarding, assigns it a fresh id/timestamp, saves it via
+ * profileRepo, and persists the unencrypted bootstrap pointer record
+ * (profileId + salt) so the NEXT app launch knows to try unlocking
+ * this profile. Returns the updated context with the complete profile
+ * attached and pendingSalt cleared (spent).
+ *
+ * REQUIRES context.pendingSalt to have been set already — this
+ * happens when security/session.ts's beginNewSession() runs during
+ * the PassphraseSetup onboarding step.
+ */
 async function handleCreateProfile(context: AppContext): Promise<AppContext> {
     if (!context.pendingSalt) {
         throw new Error(
@@ -66,6 +87,11 @@ async function handleCreateProfile(context: AppContext): Promise<AppContext> {
 
     await profileRepo.save(newProfile, context.pendingSalt);
 
+    // Remember this profile's id + salt in plain localStorage so the
+    // NEXT app launch knows there's an existing profile to unlock,
+    // before any session key exists to decrypt Dexie with.
+    saveBootstrapRecord({ profileId: newProfile.id, saltBase64: context.pendingSalt });
+
     return {
         ...context,
         profile: newProfile,
@@ -73,8 +99,12 @@ async function handleCreateProfile(context: AppContext): Promise<AppContext> {
     };
 }
 
+/**
+ * Persists the current mood/notes sitting in context as a real
+ * CheckInRecord. Requires an active profile and a selected mood.
+ */
 async function handleSaveCheckIn(context: AppContext): Promise<AppContext> {
-    if (!context.profile || context.currentMood == null) {
+    if (!context.profile || context.currentMood === null) {
         console.warn('[sideEffects] Cannot save check-in: missing profile or mood.');
         return context;
     }
@@ -90,14 +120,10 @@ async function handleSaveCheckIn(context: AppContext): Promise<AppContext> {
     return context;
 }
 
-async function handleRecordConsent(context: AppContext): Promise<void> {
-    if (!context.profile) {
-        console.warn('[sideEffects] Cannot record consent: no profile in context.');
-        return;
-    }
-    await recordConsent(context.profile.id);
-}
-
+/**
+ * Persists the current machine state+context as a snapshot, so the
+ * app can resume exactly here after the tab is closed and reopened.
+ */
 async function handlePersistSnapshot(context: AppContext): Promise<void> {
     if (!context.profile) {
         console.warn('[sideEffects] Cannot persist snapshot: no profile in context.');
@@ -112,7 +138,25 @@ async function handlePersistSnapshot(context: AppContext): Promise<void> {
     });
 }
 
-const DEFAULT_CHECKIN_QUESTION = "How Are You Doing Today?";
+/**
+ * Records an SOS consent event to the (unencrypted, audit-trail)
+ * consentRecords table.
+ */
+async function handleRecordConsent(context: AppContext): Promise<void> {
+    if (!context.profile) {
+        console.warn('[sideEffects] Cannot record consent: no profile in context.');
+        return;
+    }
+    await recordConsent(context.profile.id);
+}
+
+/**
+ * Generates the (possibly AI-diversified) check-in question and
+ * stores it in context.checkInQuestion for the frontend to display.
+ * Falls back to the plain static question if there's no profile yet,
+ * or if the AI pipeline fails/is unavailable (handled internally by
+ * getDiversifiedCheckInQuestion's own safety net).
+ */
 async function handleGenerateCheckInQuestion(context: AppContext): Promise<AppContext> {
     if (!context.profile) {
         return { ...context, checkInQuestion: DEFAULT_CHECKIN_QUESTION };

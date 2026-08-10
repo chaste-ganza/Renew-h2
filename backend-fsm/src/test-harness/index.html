@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>backend-fsm test harness</title>
+  <style>
+    /* Deliberately minimal — this is a debugging tool, not a product UI */
+    body { font-family: monospace; padding: 1rem; max-width: 700px; }
+    button { margin: 2px; padding: 6px 10px; cursor: pointer; }
+    pre { background: #111; color: #0f0; padding: 1rem; overflow-x: auto; }
+    #question { font-weight: bold; color: #06c; }
+  </style>
+</head>
+<body>
+  <h2>backend-fsm test harness</h2>
+
+  <div id="question"></div>
+
+  <h3>Global</h3>
+  <button data-event="CHECKIN_STARTED">CHECKIN_STARTED</button>
+  <button data-event="SOS_TRIGGERED">SOS_TRIGGERED</button>
+  <button data-theme="companion">THEME_CHANGED (companion)</button>
+  <button data-theme="aesthetic">THEME_CHANGED (aesthetic)</button>
+
+  <h3>Onboarding</h3>
+  <button data-event="ONBOARDING_NEXT">ONBOARDING_NEXT</button>
+  <button data-passphrase>ONBOARDING_PASSPHRASE_SET (fake salt)</button>
+  <button data-age="18-24">ONBOARDING_AGE_SUBMITTED (18-24)</button>
+  <button data-onboarding-theme="companion">ONBOARDING_THEME_SELECTED (companion)</button>
+
+  <h3>CheckIn</h3>
+  <button data-mood="calm">CHECKIN_MOOD_SELECTED (calm)</button>
+  <button data-followup>CHECKIN_FOLLOWUP_SUBMITTED (with notes)</button>
+  <button data-event="CHECKIN_RESET">CHECKIN_RESET</button>
+
+  <h3>SOS</h3>
+  <button data-event="SOS_CONSENT_GRANTED">SOS_CONSENT_GRANTED</button>
+  <button data-event="SOS_CONSENT_DENIED">SOS_CONSENT_DENIED</button>
+  <button data-event="SOS_CALL_CONNECTED">SOS_CALL_CONNECTED</button>
+  <button data-event="SOS_CANCELLED">SOS_CANCELLED</button>
+
+  <h3>Current Snapshot</h3>
+  <pre id="output">loading...</pre>
+
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
