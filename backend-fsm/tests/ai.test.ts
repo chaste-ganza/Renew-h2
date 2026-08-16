@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { isValidRephrase, cleanOutput } from '@ai/inference.service';
+import { isValidRephrase, cleanOutput } from '../src/ai/inference.service';
 import { buildRephraseQuestionPrompt, buildDiversifiedCheckInPrompt, SYSTEM_PROMPT } from '@ai/prompt.templates';
 
 describe('isValidRephrase', () => {
