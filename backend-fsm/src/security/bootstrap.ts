@@ -1,11 +1,3 @@
-/**
- * A tiny, UNENCRYPTED record living in localStorage (not Dexie —
- * deliberately separate, so it's readable before any session key
- * exists). Tells the app "there IS an existing profile, here's its
- * id and the salt needed to derive its key." Neither value is secret
- * on its own — profileId is a random UUID, salt's whole purpose is to
- * be public — so storing this in plain localStorage is safe.
- */
 export interface BootstrapRecord {
     profileId: string;
     saltBase64: string;

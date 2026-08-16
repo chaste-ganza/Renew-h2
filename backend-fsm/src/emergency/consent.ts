@@ -1,4 +1,4 @@
-import { db } from '@db/dexie.client';
+import { db } from '../db/dexie.client';
 import type { ConsentRecord } from '../types/global';
 
 export async function recordConsent(profileId: string): Promise<void> {

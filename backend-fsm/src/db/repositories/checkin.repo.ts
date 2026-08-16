@@ -1,6 +1,6 @@
-import { db } from '@db/dexie.client';
-import { encryptField, decryptField } from '@security/crypto.services';
-import { getSessionKey } from '@security/keyManager';
+import { db } from '../../db/dexie.client';
+import { encryptField, decryptField } from '../../security/crypto.services';
+import { getSessionKey } from '../../security/keyManager';
 import type { CheckInRecord, StoredCheckInRecord } from '../../types/global';
 
 async function toStoredCheckIn(record: CheckInRecord): Promise<StoredCheckInRecord> {
