@@ -5,7 +5,7 @@ import {
     SYSTEM_PROMPT,
 } from './prompt.templates';
 import type { UserProfile } from '../types/global';
-import * as checkinRepo from '@db/repositories/checkin.repo';
+import * as checkinRepo from '../db/repositories/checkin.repo';
 
 export function isValidRephrase(output: string, originalQuestion: string): boolean {
     const trimmed = output.trim();

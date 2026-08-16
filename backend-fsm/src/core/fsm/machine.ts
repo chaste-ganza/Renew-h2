@@ -1,4 +1,4 @@
-import type { AppEvent, MachineState } from '@core/fsm/types';
+import type { AppEvent, MachineState } from '../../core/fsm/types';
 import { handleOnboardingTransition, type TransitionResult } from './states/onboarding.states';
 import { handleCheckInTransition } from './states/checking.states';
 import { handleSosTransition } from './states/sos.states';
