@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
-import { transition } from '@core/fsm/machine';
-import { initialState, initialContext, type MachineState } from '@core/fsm/types';
+import { transition } from '../src/core/fsm/machine';
+import { initialState, initialContext, type MachineState } from '../src/core/fsm/types';
 
 describe('Onboarding flow', () => {
     it('starts at Welcome', () => {
