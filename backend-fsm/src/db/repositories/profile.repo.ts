@@ -1,7 +1,6 @@
-// src/db/repositories/profile.repo.ts
-import { db } from '@db/dexie.client';
-import { encryptField, decryptField } from '@security/crypto.services';
-import { getSessionKey } from '@security/keyManager';
+import { db } from '../../db/dexie.client';
+import { encryptField, decryptField } from '../../security/crypto.services';
+import { getSessionKey } from '../../security/keyManager';
 import type { UserProfile, StoredProfile } from '../../types/global';
 
 async function toStoredProfile(profile: UserProfile, saltBase64: string): Promise<StoredProfile> {

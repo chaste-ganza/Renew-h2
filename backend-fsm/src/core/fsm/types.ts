@@ -27,14 +27,16 @@ export type AppEvent =
     | { type: 'SOS_CONSENT_GRANTED' }
     | { type: 'SOS_CONSENT_DENIED' }
     | { type: 'SOS_CALL_CONNECTED' }
-    | { type: 'SOS_CANCELLED' };
+    | { type: 'SOS_CANCELLED' }
+    | { type: 'THEME_CHANGED'; theme: UserProfile['themePreference'] };
 
 export interface AppContext {
-    profile: UserProfile | null;       // null until onboarding completes
-    currentMood: string | null;        // set during CheckIn.MoodSelect
-    currentNotes: string | null;       // set during CheckIn.FollowUp
-    sosConsentTimestamp: number | null; // when consent was granted, for audit
-    pendingSalt: string | null
+    profile: UserProfile | null;
+    currentMood: string | null;
+    currentNotes: string | null;
+    sosConsentTimestamp: number | null;
+    pendingSalt: string | null;
+    checkInQuestion: string | null;
 }
 
 export interface MachineState {
@@ -47,7 +49,8 @@ export const initialContext: AppContext = {
     currentMood: null,
     currentNotes: null,
     sosConsentTimestamp: null,
-    pendingSalt: null
+    pendingSalt: null,
+    checkInQuestion: null,
 };
 
 export const initialState: AppState = { domain: 'Onboarding', step: 'Welcome' };
