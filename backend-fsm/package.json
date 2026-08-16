@@ -9,8 +9,8 @@
     "./global-types": "./src/types/global.d.ts"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "node init && vite",
+    "build": "node init && tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint ."

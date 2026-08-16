@@ -1,10 +1,10 @@
-import * as profileRepo from '@db/repositories/profile.repo';
-import * as checkinRepo from '@db/repositories/checkin.repo';
-import * as snapshotRepo from '@db/repositories/snapshot.repo';
-import { recordConsent } from '@emergency/consent';
-import { saveBootstrapRecord } from '@security/bootstrap';
-import { getDiversifiedCheckInQuestion } from '@ai/inference.service';
-import type { AppContext } from '@core/fsm/types';
+import * as profileRepo from '../../../db/repositories/profile.repo';
+import * as checkinRepo from '../../../db/repositories/checkin.repo';
+import * as snapshotRepo from '../../../db/repositories/snapshot.repo';
+import { recordConsent } from '../../../emergency/consent';
+import { saveBootstrapRecord } from '../../../security/bootstrap';
+import { getDiversifiedCheckInQuestion } from '../../../ai/inference.service';
+import type { AppContext } from '../../../core/fsm/types';
 import type { UserProfile } from '../../../types/global';
 
 const DEFAULT_CHECKIN_QUESTION = 'How are you feeling today?';

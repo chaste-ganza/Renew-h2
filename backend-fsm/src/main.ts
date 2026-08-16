@@ -1,9 +1,9 @@
-import { engine } from '@core/fsm/emitter';
-import { getBootstrapRecord } from '@security/bootstrap';
-import { unlockExistingSession } from '@security/session';
-import { initPurgeListeners } from '@security/purge';
-import * as snapshotRepo from '@db/repositories/snapshot.repo';
-import { initialContext, type MachineState } from '@core/fsm/types';
+import { engine } from '../src/core/fsm/emitter';
+import { getBootstrapRecord } from '../src/security/bootstrap';
+import { unlockExistingSession } from '../src/security/session';
+import { initPurgeListeners } from '../src/security/purge';
+import * as snapshotRepo from '../src/db/repositories/snapshot.repo';
+import { initialContext, type MachineState } from '../src/core/fsm/types';
 
 export type BootStatus =
     | { status: 'needs-onboarding' }

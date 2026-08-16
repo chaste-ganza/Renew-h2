@@ -1,10 +1,10 @@
 import { beforeAll, beforeEach, describe, it, expect } from 'bun:test';
 
-import { deriveKeyFromPassphrase, setSessionKey, generateSalt } from '@security/keyManager';
-import * as profileRepo from '@db/repositories/profile.repo';
-import * as checkinRepo from '@db/repositories/checkin.repo';
-import * as snapshotRepo from '@db/repositories/snapshot.repo';
-import { db } from '@db/dexie.client';
+import { deriveKeyFromPassphrase, setSessionKey, generateSalt } from 'src/security/keyManager';
+import * as profileRepo from 'src/db/repositories/profile.repo';
+import * as checkinRepo from 'src/db/repositories/checkin.repo';
+import * as snapshotRepo from 'src/db/repositories/snapshot.repo';
+import { db } from 'src/db/dexie.client';
 import type { UserProfile, CheckInRecord, FsmSnapshot } from '../src/types/global';
 
 let testSaltBase64: string;

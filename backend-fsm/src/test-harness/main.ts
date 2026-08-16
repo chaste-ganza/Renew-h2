@@ -1,6 +1,6 @@
-import { engine } from '@core/fsm/emitter';
+import { engine } from '../core/fsm/emitter';
 import { getBootStatus, initEngine } from '../main';
-import { beginNewSession } from '@security/session';
+import { beginNewSession } from '../security/session';
 
 const output = document.getElementById('output')!;
 const questionEl = document.getElementById('question')!;
