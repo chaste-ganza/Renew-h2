@@ -1,4 +1,4 @@
-import type { AppState, AppEvent, AppContext } from '@core/fsm/types';
+import type { AppState, AppEvent, AppContext } from '../../../core/fsm/types';
 
 export interface TransitionResult {
     state: AppState;

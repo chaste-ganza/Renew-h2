@@ -1,6 +1,6 @@
 import { deriveKeyFromPassphrase, setSessionKey, generateSalt, clearSessionKey } from './keyManager';
 import { bufferToBase64, base64ToBuffer } from './crypto.services';
-import * as profileRepo from '@db/repositories/profile.repo';
+import * as profileRepo from '../db/repositories/profile.repo';
 import type { UserProfile } from '../types/global';
 
 export async function beginNewSession(passphrase: string): Promise<{ saltBase64: string }> {

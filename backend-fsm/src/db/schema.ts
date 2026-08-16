@@ -1,6 +1,6 @@
 export const dbSchema = {
     profiles: 'id',
-    checkIns: 'id, profileId, timestamps',
+    checkins: 'id, profileId, timestamp',
     snapshots: 'id, profileId',
     consentRecords: 'id, profileId, grantedAt'
 } as const
